@@ -1,7 +1,7 @@
 
 def mostrar_banner():
     print("=" * 35)
-    print("         RenScan v1.0")
+    print("         PortSentinel v0.5")
     print("=" * 35)
 
 

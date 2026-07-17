@@ -1,25 +1,19 @@
-from utils import (
-    mostrar_banner,
-    pedir_ip,
-    pedir_puerto_inicial,
-    pedir_puerto_final,
-)
-
-from network import scan_range
-
-
-def main():
-
-    mostrar_banner()
-
-    ip = pedir_ip()
-    puerto_inicial = pedir_puerto_inicial()
-    puerto_final = pedir_puerto_final()
-
-    print("\nEscaneando...\n")
-
-    scan_range(ip, puerto_inicial, puerto_final)
+SERVICES = {
+    20: "FTP-DATA",
+    21: "FTP",
+    22: "SSH",
+    23: "TELNET",
+    25: "SMTP",
+    53: "DNS",
+    80: "HTTP",
+    110: "POP3",
+    143: "IMAP",
+    443: "HTTPS",
+    445: "SMB",
+    3306: "MySQL",
+    3389: "RDP",
+}
 
 
-if __name__ == "__main__":
-    main()
+def get_service(port):
+    return SERVICES.get(port, "Unknown")
