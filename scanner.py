@@ -1,33 +1,12 @@
-import socket
+from utils import (
+    mostrar_banner,
+    pedir_ip,
+    pedir_puerto_inicial,
+    pedir_puerto_final,
+)
 
+from network import scan_range
 
-def mostrar_banner():
-    print("=" * 35)
-    print("         RenScan v1.0")
-    print("=" * 35)
-
-
-def pedir_ip():
-    ip = input("Ingrese la IP: ")
-    return ip
-
-def pedir_puerto_inicial():
-    return int(input("Puerto inicial: "))
-
-
-def pedir_puerto_final():
-    return int(input("Puerto final: "))
-
-
-def scan_port(ip, port):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(1)
-
-    resultado = s.connect_ex((ip, port))
-
-    s.close()
-
-    return resultado == 0
 
 def main():
 
@@ -39,13 +18,8 @@ def main():
 
     print("\nEscaneando...\n")
 
-    for puerto in range(puerto_inicial, puerto_final + 1):
-
-        if scan_port(ip, puerto):
-            print(f"Puerto {puerto}: OPEN")
+    scan_range(ip, puerto_inicial, puerto_final)
 
 
 if __name__ == "__main__":
     main()
- 
-
