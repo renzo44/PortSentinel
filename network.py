@@ -1,4 +1,5 @@
 import socket
+from concurrent.futures import ThreadPoolExecutor
 
 from services import get_service
 
@@ -50,7 +51,7 @@ def get_http_banner(ip, port):
 
         for line in response.splitlines():
             if line.lower().startswith("server:"):
-                return line.replace("Server:", "").strip()
+                return line.split(":", 1)[1].strip()
 
         return response.splitlines()[0].strip()
 
@@ -85,18 +86,35 @@ def identify_service(service, banner):
 
     return service
 
+
+def scan_single_port(ip, puerto):
+
+    if scan_port(ip, puerto):
+        service = get_service(puerto)
+        banner = get_banner(ip, puerto)
+
+        service = identify_service(service, banner)
+
+        return (puerto, service, banner)
+
+    return None
+
+
 def scan_range(ip, puerto_inicial, puerto_final):
 
     print("PORT     STATUS   SERVICE     BANNER")
     print("-" * 50)
 
-    for puerto in range(puerto_inicial, puerto_final + 1):
+    with ThreadPoolExecutor(max_workers=100) as executor:
 
-        if scan_port(ip, puerto):
-            service = get_service(puerto)
-            banner = get_banner(ip, puerto)
-            
-            service = identify_service(service, banner)
+        futures = []
 
-            print(f"{puerto:<8} OPEN     {service:<10} {banner}")
-            
+        for puerto in range(puerto_inicial, puerto_final + 1):
+            futures.append(executor.submit(scan_single_port, ip, puerto))
+
+        for future in futures:
+            result = future.result()
+
+            if result:
+                puerto, service, banner = result
+                print(f"{puerto:<8} OPEN     {service:<10} {banner}")
