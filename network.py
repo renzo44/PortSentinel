@@ -64,6 +64,27 @@ def get_banner(ip, port):
 
     return get_generic_banner(ip, port)
 
+
+def identify_service(service, banner):
+    if service != "Unknown":
+        return service
+
+    banner = banner.lower()
+
+    if "http" in banner:
+        return "HTTP"
+
+    if "openssh" in banner:
+        return "SSH"
+
+    if "smtp" in banner:
+        return "SMTP"
+
+    if "ftp" in banner:
+        return "FTP"
+
+    return service
+
 def scan_range(ip, puerto_inicial, puerto_final):
 
     print("PORT     STATUS   SERVICE     BANNER")
@@ -74,5 +95,8 @@ def scan_range(ip, puerto_inicial, puerto_final):
         if scan_port(ip, puerto):
             service = get_service(puerto)
             banner = get_banner(ip, puerto)
+            
+            service = identify_service(service, banner)
 
             print(f"{puerto:<8} OPEN     {service:<10} {banner}")
+            
