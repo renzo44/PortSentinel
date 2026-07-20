@@ -1,5 +1,6 @@
 import socket
 from concurrent.futures import ThreadPoolExecutor
+from exporter import export_txt
 
 from services import get_service
 
@@ -105,6 +106,8 @@ def scan_range(ip, puerto_inicial, puerto_final):
     print("PORT     STATUS   SERVICE     BANNER")
     print("-" * 50)
 
+    results = []
+
     with ThreadPoolExecutor(max_workers=100) as executor:
 
         futures = []
@@ -116,5 +119,10 @@ def scan_range(ip, puerto_inicial, puerto_final):
             result = future.result()
 
             if result:
+                results.append(result)
+
                 puerto, service, banner = result
+
                 print(f"{puerto:<8} OPEN     {service:<10} {banner}")
+
+    export_txt(results)
