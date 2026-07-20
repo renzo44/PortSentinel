@@ -1,5 +1,5 @@
 import socket
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from exporter import (
     export_txt,
     export_csv,
@@ -112,22 +112,39 @@ def scan_range(ip, puerto_inicial, puerto_final):
 
     results = []
 
+    total_ports = puerto_final - puerto_inicial + 1
+    completed_ports = 0
+
     with ThreadPoolExecutor(max_workers=100) as executor:
 
         futures = []
 
         for puerto in range(puerto_inicial, puerto_final + 1):
-            futures.append(executor.submit(scan_single_port, ip, puerto))
+            future = executor.submit(scan_single_port, ip, puerto)
+            futures.append(future)
 
-        for future in futures:
+        for future in as_completed(futures):
             result = future.result()
+
+            completed_ports += 1
+            progress = (completed_ports / total_ports) * 100
+
+            print(
+                f"\rProgreso: {completed_ports}/{total_ports} "
+                f"({progress:.0f}%)",
+                end="",
+                flush=True,
+            )
 
             if result:
                 results.append(result)
 
-                puerto, service, banner = result
+    print("\n")
 
-                print(f"{puerto:<8} OPEN     {service:<10} {banner}")
+    results.sort(key=lambda result: result[0])
+
+    for puerto, service, banner in results:
+        print(f"{puerto:<8} OPEN     {service:<10} {banner}")
 
     export_txt(results)
     export_csv(results)

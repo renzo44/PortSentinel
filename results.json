@@ -1,8 +1,14 @@
 [
     {
-        "port": 80,
+        "port": 135,
         "status": "OPEN",
-        "service": "HTTP",
-        "banner": "gws"
+        "service": "Unknown",
+        "banner": "N/A"
+    },
+    {
+        "port": 445,
+        "status": "OPEN",
+        "service": "SMB",
+        "banner": "N/A"
     }
 ]
