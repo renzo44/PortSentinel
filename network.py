@@ -1,5 +1,6 @@
 import socket
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from tqdm import tqdm
 from exporter import (
     export_txt,
     export_csv,
@@ -113,7 +114,6 @@ def scan_range(ip, puerto_inicial, puerto_final):
     results = []
 
     total_ports = puerto_final - puerto_inicial + 1
-    completed_ports = 0
 
     with ThreadPoolExecutor(max_workers=100) as executor:
 
@@ -123,23 +123,27 @@ def scan_range(ip, puerto_inicial, puerto_final):
             future = executor.submit(scan_single_port, ip, puerto)
             futures.append(future)
 
+        progress_bar = tqdm(
+            total=total_ports,
+            desc="Scanning",
+            ncols=75,
+            unit="ports",
+            colour="green",
+)
+
+
         for future in as_completed(futures):
+
             result = future.result()
 
-            completed_ports += 1
-            progress = (completed_ports / total_ports) * 100
-
-            print(
-                f"\rProgreso: {completed_ports}/{total_ports} "
-                f"({progress:.0f}%)",
-                end="",
-                flush=True,
-            )
+            progress_bar.update(1)
 
             if result:
                 results.append(result)
 
-    print("\n")
+        progress_bar.close()
+
+    print()
 
     results.sort(key=lambda result: result[0])
 
