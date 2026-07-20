@@ -1,6 +1,10 @@
 import socket
 from concurrent.futures import ThreadPoolExecutor
-from exporter import export_txt
+from exporter import (
+    export_txt,
+    export_csv,
+    export_json,
+)
 
 from services import get_service
 
@@ -126,3 +130,5 @@ def scan_range(ip, puerto_inicial, puerto_final):
                 print(f"{puerto:<8} OPEN     {service:<10} {banner}")
 
     export_txt(results)
+    export_csv(results)
+    export_json(results)
