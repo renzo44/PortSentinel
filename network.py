@@ -26,12 +26,40 @@ def get_generic_banner(ip, port):
 
         return banner.strip()
 
-    except:
+    except Exception:
+        return "N/A"
+
+def get_http_banner(ip, port):
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(2)
+
+        s.connect((ip, port))
+
+        request = (
+            f"HEAD / HTTP/1.1\r\n"
+            f"Host: {ip}\r\n"
+            "Connection: close\r\n\r\n"
+        )
+
+        s.send(request.encode())
+
+        response = s.recv(1024).decode(errors="ignore")
+
+        s.close()
+
+        for line in response.splitlines():
+            if line.lower().startswith("server:"):
+                return line.replace("Server:", "").strip()
+
+        return response.splitlines()[0].strip()
+
+    except Exception:
         return "N/A"
 
 def get_banner(ip, port):
 
-    if port == 80:
+    if port in (80, 8000, 8080):
         return get_http_banner(ip, port)
 
     return get_generic_banner(ip, port)
