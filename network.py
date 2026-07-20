@@ -1,5 +1,6 @@
 import socket
 import ssl
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 from exporter import (
@@ -141,6 +142,8 @@ def scan_single_port(ip, puerto):
 
 def scan_range(ip, puerto_inicial, puerto_final):
 
+    start_time = time.perf_counter()
+
     print("PORT     STATUS   SERVICE     BANNER")
     print("-" * 50)
 
@@ -162,8 +165,7 @@ def scan_range(ip, puerto_inicial, puerto_final):
             ncols=75,
             unit="ports",
             colour="green",
-)
-
+        )
 
         for future in as_completed(futures):
 
@@ -176,6 +178,9 @@ def scan_range(ip, puerto_inicial, puerto_final):
 
         progress_bar.close()
 
+    end_time = time.perf_counter()
+    duration = end_time - start_time
+
     print()
 
     results.sort(key=lambda result: result[0])
@@ -186,3 +191,21 @@ def scan_range(ip, puerto_inicial, puerto_final):
     export_txt(results)
     export_csv(results)
     export_json(results)
+
+    print("\n" + "=" * 50)
+    print("SCAN SUMMARY")
+    print("=" * 50)
+
+    print(f"Target         : {ip}")
+    print(f"Ports scanned  : {total_ports}")
+    print(f"Open ports     : {len(results)}")
+    print(f"Closed ports   : {total_ports - len(results)}")
+    print(f"Duration       : {duration:.2f} seconds")
+
+    print("\nReports saved:")
+    print("  ✔ results.txt")
+    print("  ✔ results.csv")
+    print("  ✔ results.json")
+
+    print("=" * 50)
+    
