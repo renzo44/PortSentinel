@@ -13,8 +13,7 @@ def scan_port(ip, port):
 
     return resultado == 0
 
-
-def get_banner(ip, port):
+def get_generic_banner(ip, port):
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.settimeout(2)
@@ -29,6 +28,13 @@ def get_banner(ip, port):
 
     except:
         return "N/A"
+
+def get_banner(ip, port):
+
+    if port == 80:
+        return get_http_banner(ip, port)
+
+    return get_generic_banner(ip, port)
 
 def scan_range(ip, puerto_inicial, puerto_final):
 
