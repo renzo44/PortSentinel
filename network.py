@@ -145,8 +145,8 @@ def scan_single_port(ip, puerto):
     return None
 
 
-def scan_range(ip, puerto_inicial, puerto_final, threads):
-
+def scan_ports(ip, ports, threads):
+    
     start_time = time.perf_counter()
 
     print(f"{Fore.CYAN}PORT     STATUS   SERVICE     BANNER")
@@ -154,13 +154,13 @@ def scan_range(ip, puerto_inicial, puerto_final, threads):
 
     results = []
 
-    total_ports = puerto_final - puerto_inicial + 1
+    total_ports = len(ports)
 
     with ThreadPoolExecutor(max_workers=threads) as executor:
 
         futures = []
 
-        for puerto in range(puerto_inicial, puerto_final + 1):
+        for puerto in ports:
             future = executor.submit(scan_single_port, ip, puerto)
             futures.append(future)
 
