@@ -1,6 +1,10 @@
 import socket
 import ssl
 import time
+from colorama import Fore, Style, init
+
+init(autoreset=True)
+
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 from exporter import (
@@ -144,8 +148,11 @@ def scan_range(ip, puerto_inicial, puerto_final):
 
     start_time = time.perf_counter()
 
-    print("PORT     STATUS   SERVICE     BANNER")
-    print("-" * 50)
+    print(
+    f"{Fore.CYAN}"
+    "PORT     STATUS   SERVICE     BANNER"
+    )
+    print(Fore.CYAN + "-" * 50)
 
     results = []
 
@@ -186,7 +193,12 @@ def scan_range(ip, puerto_inicial, puerto_final):
     results.sort(key=lambda result: result[0])
 
     for puerto, service, banner in results:
-        print(f"{puerto:<8} OPEN     {service:<10} {banner}")
+        print(
+    f"{puerto:<8} "
+    f"{Fore.GREEN}OPEN "
+    f"{Fore.CYAN}{service:<10} "
+    f"{Fore.YELLOW}{banner}"
+    )
 
     export_txt(results)
     export_csv(results)
