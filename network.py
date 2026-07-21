@@ -145,7 +145,7 @@ def scan_single_port(ip, puerto):
     return None
 
 
-def scan_range(ip, puerto_inicial, puerto_final):
+def scan_range(ip, puerto_inicial, puerto_final, threads):
 
     start_time = time.perf_counter()
 
@@ -156,7 +156,7 @@ def scan_range(ip, puerto_inicial, puerto_final):
 
     total_ports = puerto_final - puerto_inicial + 1
 
-    with ThreadPoolExecutor(max_workers=100) as executor:
+    with ThreadPoolExecutor(max_workers=threads) as executor:
 
         futures = []
 
@@ -210,6 +210,7 @@ def scan_range(ip, puerto_inicial, puerto_final):
     print(f"Ports scanned  : {total_ports}")
     print(f"Open ports     : {len(results)}")
     print(f"Closed ports   : {total_ports - len(results)}")
+    print(f"Threads        : {threads}")
     print(f"Duration       : {duration:.2f} seconds")
 
     print("\nReports saved:")

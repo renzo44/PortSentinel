@@ -29,6 +29,14 @@ def main():
         help="Port range (example: 1-1000)"
     )
 
+    parser.add_argument(
+        "-t",
+        "--threads",
+        type=int,
+        default=100,
+        help="Number of concurrent threads (default: 100)"
+    )
+
     args = parser.parse_args()
 
     mostrar_banner()
@@ -49,7 +57,12 @@ def main():
 
     print("\nEscaneando...\n")
 
-    scan_range(ip, puerto_inicial, puerto_final)
+    scan_range(
+        ip,
+        puerto_inicial,
+        puerto_final,
+        args.threads
+    )
 
 
 if __name__ == "__main__":
