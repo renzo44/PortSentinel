@@ -11,7 +11,7 @@ def validar_ip(ip):
     
 def mostrar_banner():
     print("=" * 35)
-    print("         PortSentinel v0.5")
+    print("         PortSentinel v1.0")
     print("=" * 35)
 
 
