@@ -4,5 +4,11 @@
         "status": "OPEN",
         "service": "HTTP",
         "banner": "gws"
+    },
+    {
+        "port": 443,
+        "status": "OPEN",
+        "service": "HTTPS",
+        "banner": "gws"
     }
 ]

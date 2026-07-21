@@ -1,3 +1,4 @@
 PORT     STATUS   SERVICE     BANNER
 --------------------------------------------------
 80       OPEN     HTTP       gws
+443      OPEN     HTTPS      gws

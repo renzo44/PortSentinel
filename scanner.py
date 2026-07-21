@@ -49,6 +49,10 @@ def main():
 
     args = parser.parse_args()
 
+    # Validate thread count
+    if args.threads <= 0:
+        parser.error("Thread count must be greater than zero.")
+
     mostrar_banner()
 
     if args.target:
@@ -59,21 +63,34 @@ def main():
 
         elif args.ports:
 
-            if "-" in args.ports:
-                puerto_inicial, puerto_final = map(
-                    int,
-                    args.ports.split("-")
-                )
-                ports = list(
-                    range(puerto_inicial, puerto_final + 1)
-                )
+            try:
 
-            else:
-                ports = sorted(
-                    set(
-                        int(port.strip())
-                        for port in args.ports.split(",")
+                if "-" in args.ports:
+
+                    puerto_inicial, puerto_final = map(
+                        int,
+                        args.ports.split("-")
                     )
+
+                    if puerto_inicial > puerto_final:
+                        parser.error("Invalid port range.")
+
+                    ports = list(
+                        range(puerto_inicial, puerto_final + 1)
+                    )
+
+                else:
+
+                    ports = sorted(
+                        set(
+                            int(port.strip())
+                            for port in args.ports.split(",")
+                        )
+                    )
+
+            except ValueError:
+                parser.error(
+                    "Invalid port specification. Use formats like 1-1000 or 22,80,443."
                 )
 
         else:
@@ -85,6 +102,13 @@ def main():
         puerto_final = pedir_puerto_final()
 
         ports = list(range(puerto_inicial, puerto_final + 1))
+
+    # Validate ports
+    if not ports:
+        parser.error("No ports specified.")
+
+    if any(port < 1 or port > 65535 for port in ports):
+        parser.error("Port numbers must be between 1 and 65535.")
 
     print("\nEscaneando...\n")
 
