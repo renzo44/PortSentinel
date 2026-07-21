@@ -28,7 +28,7 @@ def main():
         "-p",
         "--ports",
         default=None,
-        help="Port range (example: 1-1000)"
+        help="Port range (example: 1-1000 or 22,80,443)"
     )
 
     parser.add_argument(
@@ -58,8 +58,23 @@ def main():
             ports = TOP_PORTS[:args.top_ports]
 
         elif args.ports:
-            puerto_inicial, puerto_final = map(int, args.ports.split("-"))
-            ports = list(range(puerto_inicial, puerto_final + 1))
+
+            if "-" in args.ports:
+                puerto_inicial, puerto_final = map(
+                    int,
+                    args.ports.split("-")
+                )
+                ports = list(
+                    range(puerto_inicial, puerto_final + 1)
+                )
+
+            else:
+                ports = sorted(
+                    set(
+                        int(port.strip())
+                        for port in args.ports.split(",")
+                    )
+                )
 
         else:
             ports = list(range(1, 1001))
