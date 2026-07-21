@@ -198,4 +198,5 @@ Always obtain permission before scanning systems you do not own.
 
 ## License
 
-This project will be released under the MIT License.
+
+This project is licensed under the MIT License. See the LICENSE file for details.
