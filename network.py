@@ -1,6 +1,9 @@
 import socket
 import ssl
 import time
+from services import get_service
+
+
 from colorama import Fore, Style, init
 
 init(autoreset=True)
@@ -12,8 +15,6 @@ from exporter import (
     export_csv,
     export_json,
 )
-
-from services import get_service
 
 
 def scan_port(ip, port):
@@ -148,10 +149,7 @@ def scan_range(ip, puerto_inicial, puerto_final):
 
     start_time = time.perf_counter()
 
-    print(
-    f"{Fore.CYAN}"
-    "PORT     STATUS   SERVICE     BANNER"
-    )
+    print(f"{Fore.CYAN}PORT     STATUS   SERVICE     BANNER")
     print(Fore.CYAN + "-" * 50)
 
     results = []
@@ -198,7 +196,7 @@ def scan_range(ip, puerto_inicial, puerto_final):
     f"{Fore.GREEN}OPEN "
     f"{Fore.CYAN}{service:<10} "
     f"{Fore.YELLOW}{banner}"
-    )
+)
 
     export_txt(results)
     export_csv(results)
